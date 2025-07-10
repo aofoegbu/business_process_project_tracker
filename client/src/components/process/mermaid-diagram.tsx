@@ -64,5 +64,11 @@ export default function MermaidDiagram({ code, className = "" }: MermaidDiagramP
     renderDiagram();
   }, [code]);
 
-  return <div ref={elementRef} className={className} />;
+  return (
+    <div className={`${className} overflow-auto max-h-96 border rounded-lg`}>
+      <div className="min-w-max min-h-max p-4">
+        <div ref={elementRef} />
+      </div>
+    </div>
+  );
 }

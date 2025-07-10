@@ -251,8 +251,8 @@ export default function Templates() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="border rounded-lg p-4 bg-white">
-                      <MermaidDiagram code={selectedTemplate.code} />
+                    <div className="border rounded-lg p-4 bg-white max-h-96 overflow-auto">
+                      <MermaidDiagram code={selectedTemplate.code} className="min-w-max" />
                     </div>
                   </CardContent>
                 </Card>

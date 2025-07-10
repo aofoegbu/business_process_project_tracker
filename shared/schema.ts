@@ -85,6 +85,8 @@ export const insertTeamMemberSchema = createInsertSchema(teamMembers).omit({
 
 export const insertProcessSchema = createInsertSchema(processes).omit({
   id: true,
+}).extend({
+  swimlanes: z.array(z.string()).default([])
 });
 
 export const insertRequirementSchema = createInsertSchema(requirements).omit({

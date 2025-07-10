@@ -99,6 +99,7 @@ export default function ProcessDesigner({ projectId }: ProcessDesignerProps) {
       name: processName,
       description: processDescription,
       mermaidCode: mermaidCode || defaultMermaidCode,
+      swimlanes: ["HR Department", "IT Department", "Facilities", "Management"]
     });
   };
 
@@ -298,10 +299,12 @@ export default function ProcessDesigner({ projectId }: ProcessDesignerProps) {
         <Card className="h-full">
           <CardContent className="p-6 h-full">
             {currentProcess ? (
-              <MermaidDiagram 
-                code={currentMermaidCode} 
-                className="w-full h-full flex items-center justify-center"
-              />
+              <div className="h-full overflow-auto">
+                <MermaidDiagram 
+                  code={currentMermaidCode} 
+                  className="w-full min-h-full"
+                />
+              </div>
             ) : (
               <div className="h-full flex items-center justify-center text-gray-500">
                 <div className="text-center">
