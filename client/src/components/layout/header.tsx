@@ -11,7 +11,7 @@ export default function Header() {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <FolderOpen className="w-4 h-4 text-white" />
               </div>
-              <h1 className="text-xl font-bold text-gray-900">ProcessFlow Pro</h1>
+              <h1 className="text-xl font-bold text-gray-900">Ogelo ProcessFlow</h1>
             </div>
             <nav className="hidden md:flex space-x-8">
               <button className="text-primary font-medium border-b-2 border-primary pb-4 -mb-4">

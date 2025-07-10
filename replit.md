@@ -1,8 +1,8 @@
-# ProcessFlow Pro - Project Management & Process Design Platform
+# Ogelo ProcessFlow - Project Management & Process Design Platform
 
 ## Overview
 
-ProcessFlow Pro is a full-stack web application designed for comprehensive project management with specialized features for process design, requirements management, UAT testing, and cost analysis. The application provides an integrated platform for teams to manage complex business processes from conception to completion.
+Ogelo ProcessFlow is a full-stack web application designed for comprehensive project management with specialized features for process design, requirements management, UAT testing, and cost analysis. The application provides an integrated platform for teams to manage complex business processes from conception to completion.
 
 ## User Preferences
 
