@@ -41,35 +41,33 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-      <div className="flex h-screen pt-16">
+      <div className="flex flex-1">
         <Sidebar />
-        <main className="flex-1 overflow-hidden">
-          <div className="h-full flex flex-col">
-            {/* Tab Navigation */}
-            <div className="bg-white border-b border-gray-200 px-6">
-              <div className="flex space-x-8">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id as TabType)}
-                    className={`py-4 px-2 border-b-2 font-medium transition-colors ${
-                      activeTab === tab.id
-                        ? "border-primary text-primary"
-                        : "border-transparent text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
+        <main className="flex-1 flex flex-col min-h-0">
+          {/* Tab Navigation */}
+          <div className="bg-white border-b border-gray-200 px-6 flex-shrink-0">
+            <div className="flex space-x-8">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as TabType)}
+                  className={`py-4 px-2 border-b-2 font-medium transition-colors ${
+                    activeTab === tab.id
+                      ? "border-primary text-primary"
+                      : "border-transparent text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
+          </div>
 
-            {/* Tab Content */}
-            <div className="flex-1 overflow-y-auto">
-              {renderTabContent()}
-            </div>
+          {/* Tab Content */}
+          <div className="flex-1 overflow-y-auto">
+            {renderTabContent()}
           </div>
         </main>
       </div>

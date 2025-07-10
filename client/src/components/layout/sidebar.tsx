@@ -80,8 +80,8 @@ export default function Sidebar() {
     input.click();
   };
   return (
-    <aside className="w-64 bg-white shadow-sm border-r border-gray-200 overflow-y-auto">
-      <div className="p-6">
+    <aside className="w-64 bg-white shadow-sm border-r border-gray-200 flex-shrink-0">
+      <div className="h-full overflow-y-auto p-6">
         <div className="mb-6">
           <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">
             Recent Projects
