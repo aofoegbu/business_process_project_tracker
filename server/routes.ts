@@ -199,6 +199,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Initialize database with dummy data
+  app.post("/api/init-db", async (_req, res) => {
+    try {
+      await (storage as any).initializeDefaultData();
+      res.json({ message: "Database initialized successfully" });
+    } catch (error: any) {
+      console.error("Database initialization error:", error);
+      res.status(500).json({ message: "Failed to initialize database", error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

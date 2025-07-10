@@ -27,7 +27,7 @@ export const processes = pgTable("processes", {
   name: text("name").notNull(),
   description: text("description").notNull(),
   mermaidCode: text("mermaid_code").notNull(),
-  swimlanes: jsonb("swimlanes").$type<string[]>().notNull().default([]),
+  swimlanes: jsonb("swimlanes").$type<string[]>().notNull(),
 });
 
 export const requirements = pgTable("requirements", {
