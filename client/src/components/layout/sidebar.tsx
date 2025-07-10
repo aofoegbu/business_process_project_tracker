@@ -1,6 +1,13 @@
 import { Folder, FolderOpen, FileText, Plus, Upload, Download, Users, Server, ClipboardCheck } from "lucide-react";
+import { Link, useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
+import { type Project } from "@shared/schema";
 
 export default function Sidebar() {
+  const [location] = useLocation();
+  const { data: projects } = useQuery<Project[]>({
+    queryKey: ["/api/projects"],
+  });
   return (
     <aside className="w-64 bg-white shadow-sm border-r border-gray-200 overflow-y-auto">
       <div className="p-6">
@@ -9,18 +16,24 @@ export default function Sidebar() {
             Recent Projects
           </h2>
           <div className="space-y-2">
-            <div className="flex items-center p-2 rounded-lg bg-blue-50 text-primary">
-              <FolderOpen className="w-4 h-4 mr-3" />
-              <span className="text-sm font-medium">Employee Onboarding</span>
-            </div>
-            <div className="flex items-center p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <Folder className="w-4 h-4 mr-3 text-gray-400" />
-              <span className="text-sm">Invoice Processing</span>
-            </div>
-            <div className="flex items-center p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <Folder className="w-4 h-4 mr-3 text-gray-400" />
-              <span className="text-sm">System Access Request</span>
-            </div>
+            {projects?.slice(0, 3).map((project) => (
+              <Link
+                key={project.id}
+                href={`/project/${project.id}`}
+                className={`flex items-center p-2 rounded-lg cursor-pointer ${
+                  location === `/project/${project.id}` 
+                    ? 'bg-blue-50 text-primary' 
+                    : 'hover:bg-gray-50'
+                }`}
+              >
+                {location === `/project/${project.id}` ? (
+                  <FolderOpen className="w-4 h-4 mr-3" />
+                ) : (
+                  <Folder className="w-4 h-4 mr-3 text-gray-400" />
+                )}
+                <span className="text-sm font-medium truncate">{project.name}</span>
+              </Link>
+            ))}
           </div>
         </div>
         
@@ -29,18 +42,18 @@ export default function Sidebar() {
             Process Templates
           </h2>
           <div className="space-y-2">
-            <div className="flex items-center p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
+            <Link href="/templates/approval" className="flex items-center p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
               <FileText className="w-4 h-4 mr-3 text-gray-400" />
               <span className="text-sm">Approval Workflow</span>
-            </div>
-            <div className="flex items-center p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
+            </Link>
+            <Link href="/templates/review" className="flex items-center p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
               <FileText className="w-4 h-4 mr-3 text-gray-400" />
               <span className="text-sm">Review Process</span>
-            </div>
-            <div className="flex items-center p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
+            </Link>
+            <Link href="/templates/escalation" className="flex items-center p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
               <FileText className="w-4 h-4 mr-3 text-gray-400" />
               <span className="text-sm">Escalation Flow</span>
-            </div>
+            </Link>
           </div>
         </div>
 
@@ -49,10 +62,10 @@ export default function Sidebar() {
             Quick Actions
           </h2>
           <div className="space-y-2">
-            <button className="w-full text-left p-2 rounded-lg hover:bg-gray-50 flex items-center">
+            <Link href="/process-designer" className="w-full text-left p-2 rounded-lg hover:bg-gray-50 flex items-center">
               <Plus className="w-4 h-4 mr-3 text-gray-400" />
               <span className="text-sm">Create Process</span>
-            </button>
+            </Link>
             <button className="w-full text-left p-2 rounded-lg hover:bg-gray-50 flex items-center">
               <Upload className="w-4 h-4 mr-3 text-gray-400" />
               <span className="text-sm">Import Diagram</span>
