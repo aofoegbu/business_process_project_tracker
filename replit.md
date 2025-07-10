@@ -4,9 +4,9 @@
 
 Ogelo ProcessFlow is a full-stack web application designed for comprehensive project management with specialized features for process design, requirements management, UAT testing, and cost analysis. The application provides an integrated platform for teams to manage complex business processes from conception to completion.
 
-## User Preferences
+https://business-flow-tracker-augustineogelo.replit.app/
 
-Preferred communication style: Simple, everyday language.
+![Ogelo Water Utility Dashboard](screenshots/biz-tracker.png)
 
 ## System Architecture
 
