@@ -35,6 +35,50 @@ export default function Sidebar() {
       description: "All project reports downloaded successfully.",
     });
   };
+
+  const handleImportDiagram = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,.txt,.md';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const content = event.target?.result as string;
+            let diagramData;
+            
+            if (file.name.endsWith('.json')) {
+              diagramData = JSON.parse(content);
+            } else {
+              diagramData = { mermaidCode: content };
+            }
+            
+            navigator.clipboard.writeText(diagramData.mermaidCode || content).then(() => {
+              toast({
+                title: "Diagram imported",
+                description: "Diagram data copied to clipboard. Navigate to Process Designer to paste.",
+              });
+            }).catch(() => {
+              toast({
+                title: "Import successful",
+                description: "Diagram ready to use in Process Designer.",
+              });
+            });
+          } catch (error) {
+            toast({
+              title: "Import failed",
+              description: "Could not read the diagram file. Please check the format.",
+              variant: "destructive",
+            });
+          }
+        };
+        reader.readAsText(file);
+      }
+    };
+    input.click();
+  };
   return (
     <aside className="w-64 bg-white shadow-sm border-r border-gray-200 overflow-y-auto">
       <div className="p-6">
@@ -93,7 +137,10 @@ export default function Sidebar() {
               <Plus className="w-4 h-4 mr-3 text-gray-400" />
               <span className="text-sm">Create Process</span>
             </Link>
-            <button className="w-full text-left p-2 rounded-lg hover:bg-gray-50 flex items-center">
+            <button 
+              className="w-full text-left p-2 rounded-lg hover:bg-gray-50 flex items-center"
+              onClick={handleImportDiagram}
+            >
               <Upload className="w-4 h-4 mr-3 text-gray-400" />
               <span className="text-sm">Import Diagram</span>
             </button>

@@ -1,14 +1,17 @@
-import { useParams } from "wouter";
+import { useParams, useLocation } from "wouter";
 import Header from "@/components/layout/header";
 import Sidebar from "@/components/layout/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Download, Copy, Eye, Zap } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import MermaidDiagram from "@/components/process/mermaid-diagram";
 
 export default function Templates() {
   const { templateType } = useParams();
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   const templates = [
     {
@@ -133,6 +136,62 @@ export default function Templates() {
     }
   };
 
+  const handleUseTemplate = (template: any) => {
+    // Copy template data to clipboard and navigate to process designer
+    const templateData = {
+      name: template.name,
+      description: template.description,
+      mermaidCode: template.code
+    };
+    
+    navigator.clipboard.writeText(template.code).then(() => {
+      toast({
+        title: "Template copied",
+        description: "Process diagram copied to clipboard. Navigate to Process Designer to paste.",
+      });
+      setLocation("/project/1"); // Navigate to default project
+    }).catch(() => {
+      toast({
+        title: "Template selected",
+        description: "Template ready to use in Process Designer.",
+      });
+      setLocation("/project/1");
+    });
+  };
+
+  const handleExportTemplate = (template: any) => {
+    const templateData = {
+      name: template.name,
+      description: template.description,
+      category: template.category,
+      complexity: template.complexity,
+      tags: template.tags,
+      mermaidCode: template.code,
+      exportDate: new Date().toISOString()
+    };
+    
+    const blob = new Blob([JSON.stringify(templateData, null, 2)], { 
+      type: 'application/json' 
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${template.name.replace(/\s+/g, '_')}_template.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Template exported",
+      description: `${template.name} template downloaded successfully.`,
+    });
+  };
+
+  const handleViewTemplate = (templateId: string) => {
+    setLocation(`/templates/${templateId}`);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -172,11 +231,11 @@ export default function Templates() {
                       ))}
                     </div>
                     <div className="flex gap-2">
-                      <Button>
+                      <Button onClick={() => handleUseTemplate(selectedTemplate)}>
                         <Copy className="w-4 h-4 mr-2" />
                         Use Template
                       </Button>
-                      <Button variant="outline">
+                      <Button variant="outline" onClick={() => handleExportTemplate(selectedTemplate)}>
                         <Download className="w-4 h-4 mr-2" />
                         Export
                       </Button>
@@ -231,11 +290,11 @@ export default function Templates() {
                       </div>
                       
                       <div className="mt-4 pt-4 border-t flex gap-2">
-                        <Button size="sm" className="flex-1">
+                        <Button size="sm" className="flex-1" onClick={() => handleUseTemplate(template)}>
                           <Zap className="w-4 h-4 mr-2" />
                           Use Template
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="outline" onClick={() => handleViewTemplate(template.id)}>
                           <Eye className="w-4 h-4" />
                         </Button>
                       </div>
