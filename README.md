@@ -4,6 +4,10 @@ A comprehensive business process management platform that enables teams to desig
 
 > **Status**: ✅ Fully Functional - All core features operational as of July 2025
 
+https://business-flow-tracker-augustineogelo.replit.app/
+
+![Ogelo Water Utility Dashboard](screenshots/biz-tracker.png)
+
 ## 🚀 Features
 
 ### Business Process Mapper
