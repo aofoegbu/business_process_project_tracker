@@ -82,6 +82,68 @@ export default function UATManager({ projectId }: UATManagerProps) {
     });
   };
 
+  const handleExportTestReport = (reportType: string) => {
+    if (!testCases) return;
+    
+    const testStats = {
+      total: testCases.length,
+      passed: testCases.filter(tc => tc.status === "Passed").length,
+      failed: testCases.filter(tc => tc.status === "Failed").length,
+      pending: testCases.filter(tc => tc.status === "Pending").length,
+      blocked: testCases.filter(tc => tc.status === "Blocked").length
+    };
+    
+    let reportData: any = {
+      project: `Project ${projectId}`,
+      reportType: reportType,
+      exportDate: new Date().toISOString(),
+      summary: testStats
+    };
+    
+    if (reportType === 'summary') {
+      reportData.testCases = testCases.map(tc => ({
+        code: tc.code,
+        title: tc.title,
+        priority: tc.priority,
+        status: tc.status,
+        tester: tc.tester
+      }));
+    } else if (reportType === 'defects') {
+      reportData.defects = testCases
+        .filter(tc => tc.status === "Failed" && tc.issue)
+        .map(tc => ({
+          testCase: tc.code,
+          title: tc.title,
+          issue: tc.issue,
+          tester: tc.tester
+        }));
+    } else if (reportType === 'signoff') {
+      reportData.signoff = {
+        overallStatus: testStats.failed === 0 && testStats.blocked === 0 ? "APPROVED" : "PENDING",
+        completionRate: Math.round((testStats.passed / testStats.total) * 100),
+        approver: "UAT Team Lead",
+        signoffDate: new Date().toISOString()
+      };
+    }
+    
+    const blob = new Blob([JSON.stringify(reportData, null, 2)], { 
+      type: 'application/json' 
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `UAT_${reportType}_Report_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Test report exported",
+      description: `${reportType} report downloaded successfully.`,
+    });
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
       case "passed":
@@ -389,15 +451,15 @@ export default function UATManager({ projectId }: UATManagerProps) {
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Test Reports</h3>
               <div className="space-y-2">
-                <Button variant="ghost" className="w-full justify-start">
+                <Button variant="ghost" className="w-full justify-start" onClick={() => handleExportTestReport('summary')}>
                   <BarChart3 className="w-4 h-4 mr-3" />
                   Test Summary Report
                 </Button>
-                <Button variant="ghost" className="w-full justify-start">
+                <Button variant="ghost" className="w-full justify-start" onClick={() => handleExportTestReport('defects')}>
                   <Bug className="w-4 h-4 mr-3" />
                   Defect Report
                 </Button>
-                <Button variant="ghost" className="w-full justify-start">
+                <Button variant="ghost" className="w-full justify-start" onClick={() => handleExportTestReport('signoff')}>
                   <FileText className="w-4 h-4 mr-3" />
                   UAT Sign-off
                 </Button>

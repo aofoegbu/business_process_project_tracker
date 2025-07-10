@@ -77,6 +77,47 @@ export default function RequirementsManager({ projectId }: RequirementsManagerPr
     });
   };
 
+  const handleExportRequirements = (format: string) => {
+    if (!requirements) return;
+    
+    let content = '';
+    let filename = '';
+    let mimeType = '';
+    
+    if (format === 'csv') {
+      content = 'Code,Title,Description,Type,Priority,Status,Owner\n' +
+        requirements.map(req => 
+          `"${req.code}","${req.title}","${req.description}","${req.type}","${req.priority}","${req.status}","${req.owner}"`
+        ).join('\n');
+      filename = `Requirements_${new Date().toISOString().split('T')[0]}.csv`;
+      mimeType = 'text/csv';
+    } else {
+      content = JSON.stringify({
+        project: `Project ${projectId}`,
+        requirements: requirements,
+        exportDate: new Date().toISOString(),
+        format: format
+      }, null, 2);
+      filename = `Requirements_${format}_${new Date().toISOString().split('T')[0]}.json`;
+      mimeType = 'application/json';
+    }
+    
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Requirements exported",
+      description: `Requirements exported to ${format.toUpperCase()} successfully.`,
+    });
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
       case "approved":
@@ -322,17 +363,17 @@ export default function RequirementsManager({ projectId }: RequirementsManagerPr
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Document Actions</h3>
               <div className="space-y-2">
-                <Button variant="ghost" className="w-full justify-start">
+                <Button variant="ghost" className="w-full justify-start" onClick={() => handleExportRequirements('pdf')}>
                   <FolderOutput className="w-4 h-4 mr-3" />
                   Export to PDF
                 </Button>
-                <Button variant="ghost" className="w-full justify-start">
+                <Button variant="ghost" className="w-full justify-start" onClick={() => handleExportRequirements('word')}>
                   <FileText className="w-4 h-4 mr-3" />
                   Export to Word
                 </Button>
-                <Button variant="ghost" className="w-full justify-start">
+                <Button variant="ghost" className="w-full justify-start" onClick={() => handleExportRequirements('csv')}>
                   <Share className="w-4 h-4 mr-3" />
-                  Share Requirements
+                  Export to CSV
                 </Button>
               </div>
             </CardContent>

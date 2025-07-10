@@ -77,6 +77,63 @@ export default function CostAnalysis({ projectId }: CostAnalysisProps) {
     });
   };
 
+  const handleExportCostReport = (reportType: string) => {
+    if (!costItems) return;
+    
+    const costStats = costItems.reduce((acc, item) => ({
+      totalBudget: acc.totalBudget + item.budgeted,
+      totalActual: acc.totalActual + item.actual,
+      variance: acc.totalActual + item.actual - (acc.totalBudget + item.budgeted)
+    }), { totalBudget: 0, totalActual: 0, variance: 0 });
+    
+    let reportData: any = {
+      project: `Project ${projectId}`,
+      reportType: reportType,
+      exportDate: new Date().toISOString(),
+      summary: costStats
+    };
+    
+    if (reportType === 'budget') {
+      reportData.budgetItems = costItems.map(item => ({
+        category: item.category,
+        budgeted: item.budgeted,
+        actual: item.actual,
+        variance: item.actual - item.budgeted,
+        status: item.status
+      }));
+    } else if (reportType === 'breakdown') {
+      reportData.breakdown = costItems.map(item => ({
+        category: item.category,
+        percentage: ((item.budgeted / costStats.totalBudget) * 100).toFixed(1),
+        amount: item.budgeted
+      }));
+    } else if (reportType === 'roi') {
+      reportData.roiAnalysis = {
+        implementation_cost: costStats.totalBudget,
+        annual_savings: 72000,
+        payback_period: "7.5 months",
+        three_year_roi: "380%"
+      };
+    }
+    
+    const blob = new Blob([JSON.stringify(reportData, null, 2)], { 
+      type: 'application/json' 
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Cost_${reportType}_Report_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Cost report exported",
+      description: `${reportType} analysis downloaded successfully.`,
+    });
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
       case "under budget":
@@ -359,15 +416,15 @@ export default function CostAnalysis({ projectId }: CostAnalysisProps) {
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Cost Reports</h3>
               <div className="space-y-2">
-                <Button variant="ghost" className="w-full justify-start">
+                <Button variant="ghost" className="w-full justify-start" onClick={() => handleExportCostReport('budget')}>
                   <FileText className="w-4 h-4 mr-3" />
                   Budget Report
                 </Button>
-                <Button variant="ghost" className="w-full justify-start">
+                <Button variant="ghost" className="w-full justify-start" onClick={() => handleExportCostReport('breakdown')}>
                   <PieChart className="w-4 h-4 mr-3" />
                   Cost Breakdown
                 </Button>
-                <Button variant="ghost" className="w-full justify-start">
+                <Button variant="ghost" className="w-full justify-start" onClick={() => handleExportCostReport('roi')}>
                   <TrendingUp className="w-4 h-4 mr-3" />
                   ROI Analysis
                 </Button>

@@ -111,6 +111,35 @@ export default function ProcessDesigner({ projectId }: ProcessDesignerProps) {
     });
   };
 
+  const handleExportProcess = () => {
+    if (!currentProcess) return;
+    
+    const processData = {
+      name: currentProcess.name,
+      description: currentProcess.description,
+      mermaidCode: currentMermaidCode,
+      swimlanes: currentProcess.swimlanes,
+      exportDate: new Date().toISOString(),
+    };
+    
+    const blob = new Blob([JSON.stringify(processData, null, 2)], { 
+      type: 'application/json' 
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${currentProcess.name.replace(/\s+/g, '_')}_process.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Process exported",
+      description: "Process definition downloaded successfully.",
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="p-6">
@@ -254,7 +283,7 @@ export default function ProcessDesigner({ projectId }: ProcessDesignerProps) {
               <Save className="w-4 h-4 mr-1" />
               Save
             </Button>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handleExportProcess}>
               <Download className="w-4 h-4 mr-1" />
               Export
             </Button>

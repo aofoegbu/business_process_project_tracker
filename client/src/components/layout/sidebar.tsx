@@ -1,13 +1,40 @@
 import { Folder, FolderOpen, FileText, Plus, Upload, Download, Users, Server, ClipboardCheck } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 import { type Project } from "@shared/schema";
 
 export default function Sidebar() {
   const [location] = useLocation();
+  const { toast } = useToast();
   const { data: projects } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
   });
+
+  const handleExportAllReports = () => {
+    const reportData = {
+      projects: projects || [],
+      exportDate: new Date().toISOString(),
+      reportType: "Complete Project Report"
+    };
+    
+    const blob = new Blob([JSON.stringify(reportData, null, 2)], { 
+      type: 'application/json' 
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `All_Projects_Report_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Reports exported",
+      description: "All project reports downloaded successfully.",
+    });
+  };
   return (
     <aside className="w-64 bg-white shadow-sm border-r border-gray-200 overflow-y-auto">
       <div className="p-6">
@@ -70,7 +97,10 @@ export default function Sidebar() {
               <Upload className="w-4 h-4 mr-3 text-gray-400" />
               <span className="text-sm">Import Diagram</span>
             </button>
-            <button className="w-full text-left p-2 rounded-lg hover:bg-gray-50 flex items-center">
+            <button 
+              className="w-full text-left p-2 rounded-lg hover:bg-gray-50 flex items-center"
+              onClick={handleExportAllReports}
+            >
               <Download className="w-4 h-4 mr-3 text-gray-400" />
               <span className="text-sm">Export Reports</span>
             </button>
