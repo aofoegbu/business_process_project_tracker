@@ -2,6 +2,8 @@
 
 A comprehensive business process management platform that enables teams to design, track, and optimize workflows with advanced project management capabilities.
 
+> **Status**: ✅ Fully Functional - All core features operational as of July 2025
+
 ## 🚀 Features
 
 ### Business Process Mapper
@@ -44,9 +46,22 @@ A comprehensive business process management platform that enables teams to desig
 
 ### Prerequisites
 - Node.js 18+ 
-- PostgreSQL database (or Neon Database account)
+- PostgreSQL database (automatically provisioned on Replit)
 
-### Setup
+### Quick Start (Replit)
+
+1. **Fork or Clone this Repl**
+   - The database is already configured and ready to use
+   - All dependencies are pre-installed
+
+2. **Start the Application**
+   ```bash
+   npm run dev
+   ```
+
+   The application will be available at `http://localhost:5000`
+
+### Local Development Setup
 
 1. **Clone the repository**
    ```bash
@@ -201,13 +216,29 @@ server/
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run db:push` - Push schema changes to database
-- `npm run db:studio` - Open Drizzle Studio for database management
+- `npm run check` - TypeScript type checking
 
 ### Code Style
 - **TypeScript** for type safety across the entire stack
-- **ESLint** and **Prettier** for code formatting
 - **Modular architecture** with clear separation of concerns
 - **Component-driven development** with reusable UI elements
+
+### Current Status (July 2025)
+- ✅ **Navigation & UI**: All header links and sidebar navigation functional
+- ✅ **Project Management**: Complete CRUD operations for projects
+- ✅ **Process Designer**: Visual designer with Mermaid integration fully operational
+- ✅ **Requirements Management**: Complete requirements tracking with auto-generated codes
+- ✅ **Test Case Management**: Structured UAT scenarios with execution tracking
+- ✅ **Cost Analysis**: Budget tracking with visual indicators
+- ✅ **Database**: PostgreSQL with optimized connection pooling
+- ✅ **Template System**: Pre-built process templates for common workflows
+- ✅ **Export Functionality**: Multiple format support for data export
+
+### Recent Fixes
+- Fixed PostgreSQL connection timeout issues
+- Optimized database pool configuration
+- Resolved process designer CRUD operations
+- Enhanced Mermaid diagram rendering with scrollable containers
 
 ## 🤝 Contributing
 
