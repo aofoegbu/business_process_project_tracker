@@ -23,6 +23,8 @@ export default function ProcessDesigner({ projectId }: ProcessDesignerProps) {
   const [processName, setProcessName] = useState("");
   const [processDescription, setProcessDescription] = useState("");
   const [mermaidCode, setMermaidCode] = useState("");
+  const [swimlanes, setSwimlanes] = useState(["HR Department", "IT Department", "Management", "Facilities"]);
+  const [newSwimlane, setNewSwimlane] = useState("");
 
   const { data: processes, isLoading } = useQuery<Process[]>({
     queryKey: ["/api/projects", projectId, "processes"],
@@ -141,6 +143,17 @@ export default function ProcessDesigner({ projectId }: ProcessDesignerProps) {
     });
   };
 
+  const handleAddSwimlane = () => {
+    if (newSwimlane.trim() && !swimlanes.includes(newSwimlane.trim())) {
+      setSwimlanes([...swimlanes, newSwimlane.trim()]);
+      setNewSwimlane("");
+      toast({
+        title: "Swimlane added",
+        description: `${newSwimlane} swimlane added to process designer.`,
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="p-6">
@@ -243,26 +256,28 @@ export default function ProcessDesigner({ projectId }: ProcessDesignerProps) {
           <div>
             <h4 className="text-sm font-medium text-gray-700 mb-2">Swimlanes</h4>
             <div className="space-y-2">
-              <div className="swimlane-hr">
-                <span className="text-blue-600 mr-2">•</span>
-                HR Department
+              {swimlanes.map((lane, index) => (
+                <div key={lane} className="flex items-center">
+                  <span className={`w-3 h-3 rounded-full mr-2 ${
+                    index % 4 === 0 ? 'bg-blue-600' :
+                    index % 4 === 1 ? 'bg-green-600' :
+                    index % 4 === 2 ? 'bg-yellow-600' : 'bg-purple-600'
+                  }`}></span>
+                  <span className="text-sm text-gray-700">{lane}</span>
+                </div>
+              ))}
+              <div className="flex space-x-2">
+                <Input
+                  value={newSwimlane}
+                  onChange={(e) => setNewSwimlane(e.target.value)}
+                  placeholder="Enter swimlane name"
+                  className="text-xs"
+                  onKeyPress={(e) => e.key === 'Enter' && handleAddSwimlane()}
+                />
+                <Button variant="outline" size="sm" onClick={handleAddSwimlane}>
+                  <Plus className="w-4 h-4" />
+                </Button>
               </div>
-              <div className="swimlane-it">
-                <span className="text-green-600 mr-2">•</span>
-                IT Department
-              </div>
-              <div className="swimlane-manager">
-                <span className="text-yellow-600 mr-2">•</span>
-                Manager
-              </div>
-              <div className="swimlane-facilities">
-                <span className="text-purple-600 mr-2">•</span>
-                Facilities
-              </div>
-              <Button variant="outline" size="sm" className="w-full">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Swimlane
-              </Button>
             </div>
           </div>
         </div>
