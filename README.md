@@ -50,13 +50,13 @@ https://biztracker.ogelollm.app
 
 ### Prerequisites
 - Node.js 18+ 
-- PostgreSQL database (automatically provisioned on Replit)
+- PostgreSQL database 
 
-### Quick Start (Replit)
+### Quick Start 
 
 1. **Fork or Clone this Repl**
    - The database is already configured and ready to use
-   - All dependencies are pre-installed
+   - Install all dependencies
 
 2. **Start the Application**
    ```bash
