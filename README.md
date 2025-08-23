@@ -54,7 +54,7 @@ https://biztracker.ogelollm.app
 
 ### Quick Start 
 
-1. **Fork or Clone this Repl**
+1. **Fork or Clone this repo**
    - The database is already configured and ready to use
    - Install all dependencies
 
